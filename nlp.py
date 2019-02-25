@@ -140,7 +140,7 @@ combined_frame.to_csv(RESULTS_FILE)
 out_fieldnames = ['mrn',
                  'note_id',
                  'note_date',
-                 'binary_adj_goldstd',
+                 # 'binary_adj_goldstd',
                  'mrn_predicted_class',
                  'phrase_predicted_class',
                  'phrase',
@@ -158,26 +158,28 @@ with open (PHRASE_FILE, 'w') as resultsfile:
         mrn = row['mrn']
         note_id = row['noteid']
         note_date = row['note_date']
-        binary_adj_goldstd = list(combined_frame[combined_frame['mrn'] == mrn]['binary_adj_goldstd'])[0]
+        # binary_adj_goldstd = list(combined_frame[combined_frame['mrn'] == mrn]['binary_adj_goldstd'])[0]
         mrn_predicted_class = list(combined_frame[combined_frame['mrn'] == mrn]['predicted_class'])[0]
-        if (binary_adj_goldstd != mrn_predicted_class):
-            if not isinstance(row['text'], str):    # remove empty notes
-                continue
-            doc = nlp(row['text'])
-            for sent in doc.sents:
-                phrase = str(sent)
-                target_matches, modifier_matches = afib_targets_and_mods.testText(phrase)
-                if len(target_matches) > 0:
-                    targets = re.findall(target_pattern, phrase)
-                    modifiers = re.findall(modifier_pattern1, phrase) + re.findall(modifier_pattern2, phrase)
-                    if len(modifiers) > 0:
-                        phrase_predicted_class = 0
-                    else:
-                        phrase_predicted_class = 1
-                    line = [mrn, note_id, note_date, binary_adj_goldstd, mrn_predicted_class, phrase_predicted_class,
-                           phrase, targets, modifiers]
-                    writer.writerow(line)
+        # if (binary_adj_goldstd != mrn_predicted_class):
+        if not isinstance(row['text'], str):    # remove empty notes
+            continue
+        doc = nlp(row['text'])
+        for sent in doc.sents:
+            phrase = str(sent)
+            target_matches, modifier_matches = afib_targets_and_mods.testText(phrase)
+            if len(target_matches) > 0:
+                targets = re.findall(target_pattern, phrase)
+                modifiers = re.findall(modifier_pattern1, phrase) + re.findall(modifier_pattern2, phrase)
+                if len(modifiers) > 0:
+                    phrase_predicted_class = 0
                 else:
-                    continue
+                    phrase_predicted_class = 1
+                # line = [mrn, note_id, note_date, binary_adj_goldstd, mrn_predicted_class, phrase_predicted_class,
+                #        phrase, targets, modifiers]
+                line = [mrn, note_id, note_date, mrn_predicted_class, phrase_predicted_class,
+                       phrase, targets, modifiers]
+                writer.writerow(line)
+            else:
+                continue
 
 print ('Done!')
