@@ -1,0 +1,35 @@
+Comments: ''
+Direction: 'forward'
+Lex: no
+Regex: (?i)\bno(?!\sfurther)\b
+Type: NEGATED_EXISTENCE
+---
+Comments: ''
+Direction: 'forward'
+Lex: not
+Regex: (?i)\bnot\b
+Type: NEGATED_EXISTENCE
+---
+Comments: ''
+Direction: 'backwards'
+Lex: none
+Regex: (?i)\bnone\b
+Type: NEGATED_EXISTENCE
+---
+Comments: ''
+Direction: 'forward'
+Lex: negative
+Regex: (?i)\bnegative\b
+Type: NEGATED_EXISTENCE
+---
+Comments: ''
+Direction: 'forward'
+Lex: denies
+Regex: (?i)denies|denied|denying
+Type: NEGATED_EXISTENCE
+---
+Comments: ''
+Direction: 'bidirectional'
+Lex: aneurysmal dilatation
+Regex: (?i)\bmother\b|\bfather\b|\bsister\b|\bbrother\b|\bdaughter\b|\bson\b|\baunt\b|\buncle\b|\bgranddaughter\b|\bgrandson\b
+Type: NEGATED_EXISTENCE

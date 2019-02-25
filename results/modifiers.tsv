@@ -1,0 +1,2 @@
+Lex	Type	Regex	Direction
+start	(?i)\bstart\b|\binitiate\b|\bbegin\b|\btake\b	AFFIRMED_EXISTENCE	forward
