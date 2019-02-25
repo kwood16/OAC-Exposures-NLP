@@ -1,0 +1,6 @@
+Comments: ''
+Direction: 'forward'
+Lex: afib
+Regex: (?i)\bafib\b|\batrial\sfib|a-fib|a\.\sfib|a\.fib|\ba\sfib\b
+Type: atrial_fibrillation
+---
