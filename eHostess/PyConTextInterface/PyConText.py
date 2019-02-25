@@ -175,7 +175,7 @@ class PyConTextInterface:
         :return: [object | list of objects] A single Document instance if all the sentences share a common documentName or a list of Document
         objects if the input sentences are from multiple notes.
         """
-        print('Target File Path', targetFilePath)
+        
         targets = itemData.instantiateFromCSVtoitemData(targetFilePath)
         modifiers = itemData.instantiateFromCSVtoitemData(modifiersFilePath)
 
