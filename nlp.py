@@ -44,8 +44,8 @@ afib_targets_and_mods.addTarget("eliquis", r"(?i)\beliquis\b|\belliquis\b")
 afib_targets_and_mods.addTarget("apixaban", r"(?i)\bapixaban\b|\bapixa\b|\bapix\b")
 afib_targets_and_mods.addTarget("savaysa", r"(?i)\bsavaysa\b")
 afib_targets_and_mods.addTarget("edoxaban", r"(?i)\bedoxaban\b|\bedoxa\b|\bedox\b")
-afib_targets_and_mods.addTarget("lovenox", r"(?i)\blovenox\b")
-afib_targets_and_mods.addTarget("enoxaparin", r"(?i)\benoxaparin\b")
+# afib_targets_and_mods.addTarget("lovenox", r"(?i)\blovenox\b")
+# afib_targets_and_mods.addTarget("enoxaparin", r"(?i)\benoxaparin\b")
 # afib_targets_and_mods.addTarget("oac", r"(?i)\boral\santicoagulants?\b|\banticoags?\b|\banticoagulants?\b|\banticoagulation\b|\b(n|d|ts)?oacs?\b")
 
 # modifiers
