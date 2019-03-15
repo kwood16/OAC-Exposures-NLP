@@ -11,4 +11,3 @@ savaysa	TARGET	(?i)\bsavaysa\b	forward
 edoxaban	TARGET	(?i)\bedoxaban\b|\bedoxa\b|\bedox\b	forward
 lovenox	TARGET	(?i)\blovenox\b	forward
 enoxaparin	TARGET	(?i)\benoxaparin\b	forward
-oac	TARGET	(?i)\boral\santicoagulants?\b|\banticoags?\b|\banticoagulants?\b|\banticoagulation\b|\b(n|d|ts)?oacs?\b	forward

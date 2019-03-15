@@ -6,6 +6,7 @@ import re
 import time
 import pandas as pd
 import spacy
+import gc
 nlp = spacy.load('en_core_web_sm')
 
 from eHostess.PyConTextInterface.SentenceSplitters import SpacySplitter
@@ -45,7 +46,7 @@ afib_targets_and_mods.addTarget("savaysa", r"(?i)\bsavaysa\b")
 afib_targets_and_mods.addTarget("edoxaban", r"(?i)\bedoxaban\b|\bedoxa\b|\bedox\b")
 afib_targets_and_mods.addTarget("lovenox", r"(?i)\blovenox\b")
 afib_targets_and_mods.addTarget("enoxaparin", r"(?i)\benoxaparin\b")
-afib_targets_and_mods.addTarget("oac", r"(?i)\boral\santicoagulants?\b|\banticoags?\b|\banticoagulants?\b|\banticoagulation\b|\b(n|d|ts)?oacs?\b")
+# afib_targets_and_mods.addTarget("oac", r"(?i)\boral\santicoagulants?\b|\banticoags?\b|\banticoagulants?\b|\banticoagulation\b|\b(n|d|ts)?oacs?\b")
 
 # modifiers
 afib_targets_and_mods.addModifier("start", "AFFIRMED_EXISTENCE" , r"(?i)\bstart\b|\binitiate\b|\bbegin\b|\btake\b")
@@ -115,6 +116,7 @@ for patient_obj in patient_objs:
     processDocuments(patient_obj['notes'], patient_obj['positive_notes'])
     sys.stdout.write(f'\rCompleted {count} of {num_patients}. ({count / num_patients * 100:.2f}%)')
     count += 1
+    gc.collect()
 print('\nEnding annotation at: ', time.ctime())
 
 # predict each mrn for atrial fibrillation
@@ -131,11 +133,12 @@ for patient_obj in trimmed_objects:
         mrns.append(patient_obj['mrn'])
         predictions.append(0)
 predictions_frame = pd.DataFrame({'mrn' : mrns, 'predicted_class': predictions})
+predictions_frame.to_csv(RESULTS_FILE)
 
 # write results
-combined_frame = predictions_frame.merge(training_frame, 'left', on='mrn')
-combined_frame.to_csv(RESULTS_FILE)
-
+# combined_frame = predictions_frame.merge(training_frame, 'left', on='mrn')
+# combined_frame.to_csv(RESULTS_FILE)
+#
 # write phrase prediction results
 out_fieldnames = ['mrn',
                  'note_id',
@@ -147,7 +150,7 @@ out_fieldnames = ['mrn',
                  'targets',
                  'modifiers']
 
-target_pattern = r"(?i)\bwarfarin\b|\bcoumadin|\bdabigatran|\bdabi\b|\bpradaxa\b|\brivaroxaban\b|\briva\b|\bxarelto\b|\beliquis\b|\belliquis\b|\bapixaban\b|\bapixa\b|\bapix\b|\bsavaysa\b|\bedoxaban\b|\bedoxa\b|\bedox\b|\blovenox\b|\boral\santicoagulants?\b|\banticoags?\b|\banticoagulants?\b|\banticoagulation\b|\b(n|d|ts)?oacs?\b"
+target_pattern = r"(?i)\bwarfarin\b|\bcoumadin|\bdabigatran|\bdabi\b|\bpradaxa\b|\brivaroxaban\b|\briva\b|\bxarelto\b|\beliquis\b|\belliquis\b|\bapixaban\b|\bapixa\b|\bapix\b|\bsavaysa\b|\bedoxaban\b|\bedoxa\b|\bedox\b|\blovenox\b"
 modifier_pattern1 = r"(?i)\bstart\b|\binitiate\b|\bbegin\b"
 modifier_pattern2 = r"(?i)\btake\b"
 
@@ -159,7 +162,7 @@ with open (PHRASE_FILE, 'w') as resultsfile:
         note_id = row['noteid']
         note_date = row['note_date']
         # binary_adj_goldstd = list(combined_frame[combined_frame['mrn'] == mrn]['binary_adj_goldstd'])[0]
-        mrn_predicted_class = list(combined_frame[combined_frame['mrn'] == mrn]['predicted_class'])[0]
+        mrn_predicted_class = list(predictions_frame[predictions_frame['mrn'] == mrn]['predicted_class'])[0]
         # if (binary_adj_goldstd != mrn_predicted_class):
         if not isinstance(row['text'], str):    # remove empty notes
             continue
