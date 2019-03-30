@@ -151,9 +151,10 @@ out_fieldnames = ['mrn',
                  'targets',
                  'modifiers']
 
-target_pattern = r"(?i)\bwarfarin\b|\bcoumadin|\bdabigatran|\bdabi\b|\bpradaxa\b|\brivaroxaban\b|\briva\b|\bxarelto\b|\beliquis\b|\belliquis\b|\bapixaban\b|\bapixa\b|\bapix\b|\bsavaysa\b|\bedoxaban\b|\bedoxa\b|\bedox\b|\blovenox\b"
+target_pattern = r"(?i)\bwarfarin\b|\bcoumadin|\bdabigatran|\bdabi\b|\bpradaxa\b|\brivaroxaban\b|\briva\b|\bxarelto\b|\beliquis\b|\belliquis\b|\bapixaban\b|\bapixa\b|\bapix\b|\bsavaysa\b|\bedoxaban\b|\bedoxa\b|\bedox\b"
 modifier_pattern1 = r"(?i)\bstart\b|\binitiate\b|\bbegin\b"
 modifier_pattern2 = r"(?i)\btake\b"
+# r"(?i)\bstop\b|\bdo not treat\b|\bdon't treat\b
 
 with open (PHRASE_FILE, 'w') as resultsfile:
     writer = csv.writer(resultsfile)

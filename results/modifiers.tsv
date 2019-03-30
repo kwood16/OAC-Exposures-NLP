@@ -1,2 +1,3 @@
 Lex	Type	Regex	Direction
 start	(?i)\bstart\b|\binitiate\b|\bbegin\b|\btake\b	AFFIRMED_EXISTENCE	forward
+stop	(?i)\bstop\b|\bdo not treat\b|\bdon't treat\b	NEGATED_EXISTENCE	forward
