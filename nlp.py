@@ -49,8 +49,8 @@ afib_targets_and_mods.addTarget("edoxaban", r"(?i)\bedox[a-z]+\b|\bedoxa\b|\bedo
 # afib_targets_and_mods.addTarget("oac", r"(?i)\boral\santicoagulants?\b|\banticoags?\b|\banticoagulants?\b|\banticoagulation\b|\b(n|d|ts)?oacs?\b")
 
 # modifiers
-afib_targets_and_mods.addModifier("start", "AFFIRMED_EXISTENCE" , r"(?i)\bstart\b|\binitiate\b|\bbegin\b|\btake\b")
-afib_targets_and_mods.addModifier("stop", "NEGATED_EXISTENCE" , r"(?i)\bstop\b|\bdo not treat\b|\bdon't treat\b")
+afib_targets_and_mods.addModifier("start", "AFFIRMED_EXISTENCE" , r"(?i)\bstart\b|\binitiate\b|\bbegin\b|\btake\b", direction = 'forward')
+afib_targets_and_mods.addModifier("stop", "NEGATED_EXISTENCE" , r"(?i)\bstop\b|\bdo not treat\b|\bdon't treat\b", direction = "forward")
 # afib_targets_and_mods.addModifier("none", r"(?i)\bnone\b", direction='backwards')
 # afib_targets_and_mods.addModifier("negative", r"(?i)\bnegative\b")
 # afib_targets_and_mods.addModifier("denies", r"(?i)denies|denied|denying")
