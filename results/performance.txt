@@ -1,0 +1,9 @@
+NLP Performance: 
+Accuracy:			40.63745019920319
+Sensitivity:			81.05263157894737
+Specificity:			31.203931203931205
+Positive Predicted Value:	21.568627450980394
+Negative Predicted Value:	87.58620689655172
+Contingency Table: 
+77	280
+18	127

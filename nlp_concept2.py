@@ -6,7 +6,6 @@ import re
 import time
 import pandas as pd
 import spacy
-import gc
 nlp = spacy.load('en_core_web_sm')
 
 from eHostess.PyConTextInterface.SentenceSplitters import SpacySplitter
@@ -19,11 +18,11 @@ TRAINING_FILE = "./data/oac_trainingset_csv.csv"
 
 # output files
 TARGETS_MODIFIERS = './results/'
-TARGETS_FILE = 'file:///C:/Users/kevin.wood/Documents/OAC NLP Project/results/targets.tsv'
+TARGETS_FILE = 'file:///C:/Users/kevin.wood/Desktop/OAC NLP Project/results/targets_extract.tsv'
 # 'file:///' + os.path.dirname(__file__) + '/TargetsAndModifiers/targets.tsv'
-MODIFIERS_FILE = 'file:///C:/Users/kevin.wood/Documents/OAC NLP Project/results/modifiers.tsv'
-RESULTS_FILE = "./results/results_training_classification.csv"
-PHRASE_FILE = "./results/phrases_training_classification.csv"
+MODIFIERS_FILE = 'file:///C:/Users/kevin.wood/Desktop/OAC NLP Project/results/modifiers_extract.tsv'
+RESULTS_FILE = "./results/results_extract.csv"
+PHRASE_FILE = "./results/phrases_extract.csv"
 
 # load data
 metadata_frame = pd.read_csv(METADATA_FILE)
@@ -33,24 +32,24 @@ training_frame = pd.read_csv(TRAINING_FILE)
 afib_targets_and_mods = tm.ModifiersAndTargets()
 
 # targets
-afib_targets_and_mods.addTarget("warfarin", r"(?i)\warf[a-z]+\b")
-afib_targets_and_mods.addTarget("coumadin", r"(?i)\bcoum[a-z]+\b")
-afib_targets_and_mods.addTarget("dabigatran", r"(?i)\bdabi[a-z]+\b|\bdabi\b")
-afib_targets_and_mods.addTarget("pradaxa", r"(?i)\bprad[a-z]+\b")
-afib_targets_and_mods.addTarget("rivaroxaban", r"(?i)\briva[a-z]+\b|\briva\b")
-afib_targets_and_mods.addTarget("xarelto", r"(?i)\bxar[a-z]+\b")
-afib_targets_and_mods.addTarget("eliquis", r"(?i)\beliq[a-z]+\b|\belliq[a-z]+\b")
-afib_targets_and_mods.addTarget("apixaban", r"(?i)\bapix[a-z]+\b|\bapixa\b|\bapix\b")
-afib_targets_and_mods.addTarget("savaysa", r"(?i)\bsavay[a-z+]\b")
-afib_targets_and_mods.addTarget("edoxaban", r"(?i)\bedox[a-z]+\b|\bedoxa\b|\bedox\b")
+afib_targets_and_mods.addTarget("date", r"\b\d{1,2}[-/]\d{1,2}[-/]\d{2,4}\b")
 
 # modifiers
-afib_targets_and_mods.addModifier("start", "AFFIRMED_EXISTENCE" , r"(?i)\bstart\b|\binitiate\b|\bbegin\b|\btake\b", direction = 'forward')
-afib_targets_and_mods.addModifier("stop", "NEGATED_EXISTENCE" , r"(?i)\bstop\b|\bdo not treat\b|\bdon't treat\b", direction = "forward")
+afib_targets_and_mods.addModifier("warfarin", "AFFIRMED_EXISTENCE", r"(?i)\warf[a-z]+\b", direction = 'bidirectional')
+afib_targets_and_mods.addModifier("coumadin", "AFFIRMED_EXISTENCE", r"(?i)\bcoum[a-z]+\b", direction = 'bidirectional')
+afib_targets_and_mods.addModifier("dabigatran", "AFFIRMED_EXISTENCE", r"(?i)\bdabi[a-z]+\b|\bdabi\b", direction = 'bidirectional')
+afib_targets_and_mods.addModifier("pradaxa", "AFFIRMED_EXISTENCE", r"(?i)\bprad[a-z]+\b", direction = 'bidirectional')
+afib_targets_and_mods.addModifier("rivaroxaban", "AFFIRMED_EXISTENCE", r"(?i)\briva[a-z]+\b|\briva\b", direction = 'bidirectional')
+afib_targets_and_mods.addModifier("xarelto", "AFFIRMED_EXISTENCE", r"(?i)\bxar[a-z]+\b", direction = 'bidirectional')
+afib_targets_and_mods.addModifier("eliquis", "AFFIRMED_EXISTENCE", r"(?i)\beliq[a-z]+\b|\belliq[a-z]+\b", direction = 'bidirectional')
+afib_targets_and_mods.addModifier("apixaban", "AFFIRMED_EXISTENCE", r"(?i)\bapix[a-z]+\b|\bapixa\b|\bapix\b", direction = 'bidirectional')
+afib_targets_and_mods.addModifier("savaysa", "AFFIRMED_EXISTENCE", r"(?i)\bsavay[a-z+]\b", direction = 'bidirectional')
+afib_targets_and_mods.addModifier("edoxaban", "AFFIRMED_EXISTENCE", r"(?i)\bedox[a-z]+\b|\bedoxa\b|\bedox\b", direction = 'bidirectional')
+
 
 afib_targets_and_mods.writeTargetsAndModifiers(TARGETS_MODIFIERS,
-                                               targets_name="targets.tsv",
-                                               modifiers_name="modifiers.tsv")
+                                               targets_name="targets_extract.tsv",
+                                               modifiers_name="modifiers_extract.tsv")
 
 # create patient objects
 mrns = metadata_frame['mrn'].unique()
@@ -96,7 +95,6 @@ for patient_obj in patient_objs:
     processDocuments(patient_obj['notes'], patient_obj['positive_notes'])
     sys.stdout.write(f'\rCompleted {count} of {num_patients}. ({count / num_patients * 100:.2f}%)')
     count += 1
-    gc.collect()
 print('\nEnding annotation at: ', time.ctime())
 
 # predict each mrn for atrial fibrillation
@@ -118,7 +116,7 @@ predictions_frame.to_csv(RESULTS_FILE)
 # write results
 # combined_frame = predictions_frame.merge(training_frame, 'left', on='mrn')
 # combined_frame.to_csv(RESULTS_FILE)
-#
+# ADJUST PREDICTED  CLASS TO CONSIDER ASSIGNED MODIFIER AND TO SELECT THE MIN DATE ACCORDING TO MRN***************************************************************
 # write phrase prediction results
 out_fieldnames = ['mrn',
                  'note_id',
@@ -130,9 +128,8 @@ out_fieldnames = ['mrn',
                  'targets',
                  'modifiers']
 
-target_pattern = r"(?i)\bwarfarin\b|\bcoumadin|\bdabigatran|\bdabi\b|\bpradaxa\b|\brivaroxaban\b|\briva\b|\bxarelto\b|\beliquis\b|\belliquis\b|\bapixaban\b|\bapixa\b|\bapix\b|\bsavaysa\b|\bedoxaban\b|\bedoxa\b|\bedox\b"
-modifier_pattern1 = r"(?i)\bstart\b|\binitiate\b|\bbegin\b|\btake\b"
-# r"(?i)\bstop\b|\bdo not treat\b|\bdon't treat\b
+modifier_pattern1 = r"(?i)\bwarfarin\b|\bcoumadin|\bdabigatran|\bdabi\b|\bpradaxa\b|\brivaroxaban\b|\briva\b|\bxarelto\b|\beliquis\b|\belliquis\b|\bapixaban\b|\bapixa\b|\bapix\b|\bsavaysa\b|\bedoxaban\b|\bedoxa\b|\bedox\b"
+target_pattern = r"\b\d{1,2}[-/]\d{1,2}[-/]\d{2,4}\b"
 
 with open (PHRASE_FILE, 'w') as resultsfile:
     writer = csv.writer(resultsfile)

@@ -25,8 +25,8 @@ from collections import namedtuple
 
 
 defaultModifierToAnnotationClassMap = {
-    "NEGATED_EXISTENCE" : "bleeding_absent",
-    "AFFIRMED_EXISTENCE" : "bleeding_present"
+    "NEGATED_EXISTENCE" : "oac_absent",
+    "AFFIRMED_EXISTENCE" : "oac_present"
 }
 
 defaultTargetFilePath = 'file:///' + os.path.dirname(__file__) + '/TargetsAndModifiers/targets.tsv'
@@ -175,7 +175,7 @@ class PyConTextInterface:
         :return: [object | list of objects] A single Document instance if all the sentences share a common documentName or a list of Document
         objects if the input sentences are from multiple notes.
         """
-        
+
         targets = itemData.instantiateFromCSVtoitemData(targetFilePath)
         modifiers = itemData.instantiateFromCSVtoitemData(modifiersFilePath)
 

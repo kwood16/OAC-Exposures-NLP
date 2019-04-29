@@ -17,8 +17,11 @@ else:
 	source venv/bin/activate
 fi
 
-echo "executing NLP..."
+echo "executing NLP Extraction..."
+python nlp_concept2.py
+echo "completed NLP Extraction..."
+echo "executing NLP Classification..."
 python nlp.py
 
 echo "executing analysis..."
-#python analysis.py
+python analysis_extract.py
